@@ -4,12 +4,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\FormInputApiController;
 use App\Http\Controllers\Api\PeopleApiController;
+use App\Http\Controllers\Api\PhoneNumberApiController;
 
 Route::prefix('v1')->middleware('api')->group(function () {
     Route::get('/hello', function () {
         return response()->json(['message' => 'Hello World!']);
     });
     Route::apiResource('people', PeopleApiController::class);
+    Route::apiResource('phone-number', PhoneNumberApiController::class);
     Route::apiResource('form', FormInputApiController::class);
 });
 

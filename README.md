@@ -15,6 +15,9 @@ This project is made with Laravel 11 and MySQL.
 ## Features
 <ul>
     <li>CRUD - All Input Type</li>
-    <li>CRUD - People (One To One)</li>
+    <li>CRUD - People with Id Card (One To One)</li>
+    <li>CRUD API - People with Id Card (One To One)</li>
+    <li>CRUD - People with Phone Number (One To Many)</li>
+    <li>CRUD API - People with Phone Number (One To Many)</li>
     <li>Validation</li>
 </ul>

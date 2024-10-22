@@ -19,5 +19,6 @@ This project is made with Laravel 11 and MySQL.
     <li>CRUD API - People with Id Card (One To One)</li>
     <li>CRUD - People with Phone Number (One To Many)</li>
     <li>CRUD API - People with Phone Number (One To Many)</li>
+    <li>CRUD - Master Hobby (For Many To Many)</li>
     <li>Validation</li>
 </ul>

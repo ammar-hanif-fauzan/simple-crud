@@ -11,7 +11,7 @@ Route::prefix('v1')->middleware('api')->group(function () {
     Route::get('/hello', function () {
         return response()->json(['message' => 'Hello World!']);
     });
-    Route::apiResource('people', PeopleApiController::class); // One To One
+    Route::apiResource('people', PeopleApiController::class); // One To One with IdCard && Many To Many with Hobby
     Route::apiResource('phone-number', PhoneNumberApiController::class); // One To Many
     Route::apiResource('hobbies', HobbyApiController::class); // Master Hobby for Many To Many
 });

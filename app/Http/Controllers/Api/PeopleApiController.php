@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use Illuminate\Http\Request;
 use App\Models\People;
 use App\Models\IdCard;
+use App\Models\Hobby;
 use App\Http\Controllers\Controller;
 use Illuminate\Validation\ValidationException;
 
@@ -29,6 +30,7 @@ class PeopleApiController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'id_number' => 'required',
+            'hobby_id' => 'required',
         ]);
 
         $people = new People;
@@ -40,7 +42,9 @@ class PeopleApiController extends Controller
         $idCard->id_number = $request->id_number;
         $idCard->save();
 
-        $person = People::with('idCard')->find($people->id);
+        $people->hobbies()->attach($request->hobby_id);
+
+        $person = People::with('idCard', 'hobbies')->find($people->id);
         return response()->json([
             'message' => 'People created successfully.',
             'data' => $person
@@ -52,7 +56,7 @@ class PeopleApiController extends Controller
      */
     public function show($id)
     {
-        $person = People::with('idCard')->find($id);
+        $person = People::with('idCard', 'hobbies')->find($id);
 
         return response()->json($person);
     }
@@ -63,7 +67,7 @@ class PeopleApiController extends Controller
     public function update(Request $request, $id)
     {
         // Cari data people berdasarkan id
-        $people = People::with('idCard')->find($id);
+        $people = People::with(['idCard', 'hobbies'])->find($id);
         if (!$people) {
             return response()->json(['message' => 'People not found.'], 404);
         }
@@ -79,6 +83,10 @@ class PeopleApiController extends Controller
             $idCard->save();
         }
 
+        // Update hobbies
+        $people->hobbies()->sync($request->hobby_id);
+
+        $people = People::with(['idCard', 'hobbies'])->find($id);
         // Response JSON sukses
         return response()->json([
             'message' => 'People updated successfully.',
@@ -91,7 +99,7 @@ class PeopleApiController extends Controller
      */
     public function destroy($id)
     {
-        $people = People::with('idCard')->find($id);
+        $people = People::with('idCard', 'hobbies')->find($id);
         $people->delete();
 
         return response()->json([

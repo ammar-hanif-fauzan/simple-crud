@@ -19,4 +19,9 @@ class People extends Model
     {
         return $this->hasOne(IdCard::class);
     }
+
+    public function hobbies()
+    {
+        return $this->belongsToMany(Hobby::class, 'people_hobbies', 'people_id', 'hobby_id');
+    }
 }

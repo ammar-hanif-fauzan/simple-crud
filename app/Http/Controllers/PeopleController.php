@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\People;
 use App\Models\IdCard;
+use App\Models\Hobby;
 
 class PeopleController extends Controller
 {
@@ -23,7 +24,9 @@ class PeopleController extends Controller
      */
     public function create()
     {
-        return view('people.create');
+        $hobbies = Hobby::all();
+
+        return view('people.create', compact('hobbies'));
     }
 
     /**
@@ -35,10 +38,14 @@ class PeopleController extends Controller
         $people->name = $request->name;
         $people->save();
 
+        // One to One - Create IdCard
         $idCard = new IdCard;
         $idCard->people_id = $people->id;
         $idCard->id_number = $request->id_number;
         $idCard->save();
+        
+        // Many to Many - Attach Hobby
+        $people->hobbies()->attach($request->hobby_id);
 
         return redirect()->route('people.index')->with('success', 'People created successfully.');
     }
@@ -57,8 +64,9 @@ class PeopleController extends Controller
     public function edit($id)
     {
         $person = People::find($id);
+        $hobbies = Hobby::all();
         
-        return view('people.edit', compact('person'));
+        return view('people.edit', compact('person', 'hobbies'));
     }
 
     /**
@@ -70,9 +78,13 @@ class PeopleController extends Controller
         $people->name = $request->name;
         $people->update();
 
+        // One to One - Update IdCard
         $idCard = IdCard::where('people_id', $people->id)->first();
         $idCard->id_number = $request->id_number;
         $idCard->update();
+        
+        // Many to Many - Sync Hobby
+        $people->hobbies()->sync($request->hobby_id);
 
         return redirect()->route('people.index')->with('success', 'People updated successfully.');
     }

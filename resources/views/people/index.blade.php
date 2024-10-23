@@ -16,6 +16,8 @@
                     <th class="border px-4 py-2 w-[50px]">No.</th>
                     <th class="border px-4 py-2">Name</th>
                     <th class="border px-4 py-2">Id Number</th>
+                    <th class="border px-4 py-2">Hobby</th>
+                    <th class="border px-4 py-2">Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -26,6 +28,11 @@
                         <td class="border px-4 py-2 text-center relative group">
                             <div class="truncate" style="max-width: 200px">{{ $person->idCard?->id_number }}</div>
                             <div class="absolute left-0 top-full mt-2 hidden group-hover:block bg-gray-700 text-white text-sm p-2 rounded-lg shadow-lg" style="min-width: 200px">{{ $person->idCard?->id_number }}</div>
+                        </td>
+                        <td class="border px-4 py-2 text-center truncate">
+                            @foreach($person->hobbies as $hobby)
+                                <span class="bg-gray-200 text-gray-600 px-2 py-1 rounded-full text-xs">{{ $hobby->name }}</span>
+                            @endforeach
                         </td>
                         <td class="border px-4 py-2 text-center">
                             <div class="flex justify-center items-center gap-2">

@@ -13,6 +13,6 @@ class Hobby extends Model
 
     public function people()
     {
-        return $this->belongsToMany(Person::class);
+        return $this->belongsToMany(People::class, 'people_hobbies', 'hobby_id', 'people_id');
     }
 }

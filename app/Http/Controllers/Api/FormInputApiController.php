@@ -6,7 +6,7 @@ use App\Http\Requests\UpdateFormInputRequest;
 use App\Models\FormInput;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Storage;         
 
 class FormInputApiController extends Controller
 {
@@ -98,7 +98,7 @@ class FormInputApiController extends Controller
     {
         $input = FormInput::find($id);
         $input->delete();
-        
+
         return response()->json(['message' => 'Input deleted successfully']);
     }
 }

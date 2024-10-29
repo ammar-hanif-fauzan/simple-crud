@@ -16,7 +16,7 @@ class PeopleApiController extends Controller
      */
     public function index()
     {
-        $people = People::paginate(5);
+        $people = People::with(['idCard', 'hobbies', 'PhoneNumber'])->paginate(5);
 
         return response()->json($people);
     }
@@ -40,7 +40,7 @@ class PeopleApiController extends Controller
         $idCard = new IdCard;
         $idCard->people_id = $people->id;
         $idCard->id_number = $request->id_number;
-        $idCard->save();
+        $idCard->save();    
 
         $people->hobbies()->attach($request->hobby_id);
 

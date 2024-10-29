@@ -2,8 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\PhoneNumber;
+use App\Models\Hobby;
+use App\Models\IdCard;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class People extends Model
 {
@@ -23,5 +26,10 @@ class People extends Model
     public function hobbies()
     {
         return $this->belongsToMany(Hobby::class, 'people_hobbies', 'people_id', 'hobby_id');
+    }
+
+    public function PhoneNumber()
+    {
+        return $this->hasOne(PhoneNumber::class, 'people_id');
     }
 }

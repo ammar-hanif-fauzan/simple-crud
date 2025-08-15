@@ -11,7 +11,7 @@ use App\Http\Controllers\AuthController;
 Route::prefix('v1')->middleware('api')->group(function () {
     // Normal Route
     Route::get('/hello', function () {
-        return response()->json(['message' => 'Hello World!']);
+        return response()->json(['message' => 'Hello, Happy World!']);
     });
     Route::apiResource('people',        PeopleApiController::class);
     Route::apiResource('phone-number',  PhoneNumberApiController::class);

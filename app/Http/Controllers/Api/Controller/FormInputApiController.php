@@ -1,18 +1,19 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Controller;
 
 use App\Http\Requests\UpdateFormInputRequest;
 use App\Models\FormInput;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Storage;         
+use Illuminate\Support\Facades\Storage;
+use App\Http\Controllers\Controller;
 
 class FormInputApiController extends Controller
 {
     public function index()
     {
-        dd('a');
+        // dd('a');
         $inputs = FormInput::paginate(5);
 
         return response()->json($inputs);

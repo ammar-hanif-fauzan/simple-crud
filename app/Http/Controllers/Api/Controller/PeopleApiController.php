@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Controller;
 
 use Illuminate\Http\Request;
 use App\Models\People;
@@ -40,7 +40,7 @@ class PeopleApiController extends Controller
         $idCard = new IdCard;
         $idCard->people_id = $people->id;
         $idCard->id_number = $request->id_number;
-        $idCard->save();    
+        $idCard->save();
 
         $people->hobbies()->attach($request->hobby_id);
 

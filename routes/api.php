@@ -24,12 +24,22 @@ Route::prefix('v1')->middleware('api')->group(function () {
     // Route::apiResource('phone-number',  PhoneNumberApiController::class);
     // Route::apiResource('hobbies',       HobbyApiController::class);
 
-    // People
-    Route::get   ('people',         [PeopleApiController::class, 'index']);
-    Route::post  ('people',         [PeopleApiController::class, 'store']);
-    Route::get   ('people/{id}',    [PeopleApiController::class, 'show']);
-    Route::put   ('people/{id}',    [PeopleApiController::class, 'update']);
-    Route::delete('people/{id}',    [PeopleApiController::class, 'destroy']);
+        // People
+        Route::get   ('people',         [PeopleApiController::class, 'index']);
+        Route::post  ('people',         [PeopleApiController::class, 'store']);
+        Route::get   ('people/{id}',    [PeopleApiController::class, 'show']);
+        Route::put   ('people/{id}',    [PeopleApiController::class, 'update']);
+        Route::delete('people/{id}',    [PeopleApiController::class, 'destroy']);
+
+        // People Phone Numbers Management
+        Route::get   ('people/{id}/phone-numbers',           [PeopleApiController::class, 'getPhoneNumbers']);
+        Route::post  ('people/{id}/phone-numbers',           [PeopleApiController::class, 'addPhoneNumber']);
+        Route::delete('people/{id}/phone-numbers/{phone_id}', [PeopleApiController::class, 'removePhoneNumber']);
+
+        // People Hobbies Management
+        Route::get   ('people/{id}/hobbies',           [PeopleApiController::class, 'getHobbies']);
+        Route::post  ('people/{id}/hobbies',           [PeopleApiController::class, 'addHobby']);
+        Route::delete('people/{id}/hobbies/{hobby_id}', [PeopleApiController::class, 'removeHobby']);
 
     // Phone Number
     Route::get   ('phone-number',         [PhoneNumberApiController::class, 'index']);

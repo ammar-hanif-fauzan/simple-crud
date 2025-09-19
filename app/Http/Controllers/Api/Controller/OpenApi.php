@@ -456,3 +456,175 @@ use OpenApi\Annotations as OA;
  *   )
  * )
  */
+
+/**
+ * @OA\PathItem(
+ *   path="/api/v1/people/{id}/phone-numbers",
+ *   @OA\Get(
+ *     summary="Get all phone numbers for a person",
+ *     description="Mengambil semua nomor telepon milik seseorang",
+ *     tags={"People"},
+ *     @OA\Parameter(
+ *       name="id",
+ *       in="path",
+ *       required=true,
+ *       @OA\Schema(type="integer")
+ *     ),
+ *     @OA\Response(
+ *       response=200,
+ *       description="Success",
+ *       @OA\JsonContent(
+ *         @OA\Property(property="success", type="boolean", example=true),
+ *         @OA\Property(property="message", type="string", example="Phone numbers retrieved successfully"),
+ *         @OA\Property(property="data", type="object",
+ *           @OA\Property(property="person", type="object"),
+ *           @OA\Property(property="phone_numbers", type="array", @OA\Items(type="object"))
+ *         )
+ *       )
+ *     )
+ *   ),
+ *   @OA\Post(
+ *     summary="Add phone number to a person",
+ *     description="Menambah nomor telepon untuk seseorang",
+ *     tags={"People"},
+ *     @OA\Parameter(
+ *       name="id",
+ *       in="path",
+ *       required=true,
+ *       @OA\Schema(type="integer")
+ *     ),
+ *     @OA\RequestBody(
+ *       required=true,
+ *       @OA\JsonContent(
+ *         @OA\Property(property="phone_number", type="string", example="081234567890")
+ *       )
+ *     ),
+ *     @OA\Response(
+ *       response=201,
+ *       description="Phone number added successfully",
+ *       @OA\JsonContent(
+ *         @OA\Property(property="success", type="boolean", example=true),
+ *         @OA\Property(property="message", type="string", example="Phone number added successfully"),
+ *         @OA\Property(property="data", type="object")
+ *       )
+ *     )
+ *   )
+ * )
+ */
+
+/**
+ * @OA\PathItem(
+ *   path="/api/v1/people/{id}/phone-numbers/{phone_id}",
+ *   @OA\Delete(
+ *     summary="Remove phone number from a person",
+ *     description="Menghapus nomor telepon dari seseorang",
+ *     tags={"People"},
+ *     @OA\Parameter(
+ *       name="id",
+ *       in="path",
+ *       required=true,
+ *       @OA\Schema(type="integer")
+ *     ),
+ *     @OA\Parameter(
+ *       name="phone_id",
+ *       in="path",
+ *       required=true,
+ *       @OA\Schema(type="integer")
+ *     ),
+ *     @OA\Response(
+ *       response=200,
+ *       description="Phone number removed successfully",
+ *       @OA\JsonContent(
+ *         @OA\Property(property="success", type="boolean", example=true),
+ *         @OA\Property(property="message", type="string", example="Phone number removed successfully")
+ *       )
+ *     )
+ *   )
+ * )
+ */
+
+/**
+ * @OA\PathItem(
+ *   path="/api/v1/people/{id}/hobbies",
+ *   @OA\Get(
+ *     summary="Get all hobbies for a person",
+ *     description="Mengambil semua hobby milik seseorang",
+ *     tags={"People"},
+ *     @OA\Parameter(
+ *       name="id",
+ *       in="path",
+ *       required=true,
+ *       @OA\Schema(type="integer")
+ *     ),
+ *     @OA\Response(
+ *       response=200,
+ *       description="Success",
+ *       @OA\JsonContent(
+ *         @OA\Property(property="success", type="boolean", example=true),
+ *         @OA\Property(property="message", type="string", example="Hobbies retrieved successfully"),
+ *         @OA\Property(property="data", type="object",
+ *           @OA\Property(property="person", type="object"),
+ *           @OA\Property(property="hobbies", type="array", @OA\Items(type="object"))
+ *         )
+ *       )
+ *     )
+ *   ),
+ *   @OA\Post(
+ *     summary="Add hobby to a person",
+ *     description="Menambah hobby untuk seseorang",
+ *     tags={"People"},
+ *     @OA\Parameter(
+ *       name="id",
+ *       in="path",
+ *       required=true,
+ *       @OA\Schema(type="integer")
+ *     ),
+ *     @OA\RequestBody(
+ *       required=true,
+ *       @OA\JsonContent(
+ *         @OA\Property(property="hobby_id", type="integer", example=1)
+ *       )
+ *     ),
+ *     @OA\Response(
+ *       response=201,
+ *       description="Hobby added successfully",
+ *       @OA\JsonContent(
+ *         @OA\Property(property="success", type="boolean", example=true),
+ *         @OA\Property(property="message", type="string", example="Hobby added successfully"),
+ *         @OA\Property(property="data", type="object")
+ *       )
+ *     )
+ *   )
+ * )
+ */
+
+/**
+ * @OA\PathItem(
+ *   path="/api/v1/people/{id}/hobbies/{hobby_id}",
+ *   @OA\Delete(
+ *     summary="Remove hobby from a person",
+ *     description="Menghapus hobby dari seseorang",
+ *     tags={"People"},
+ *     @OA\Parameter(
+ *       name="id",
+ *       in="path",
+ *       required=true,
+ *       @OA\Schema(type="integer")
+ *     ),
+ *     @OA\Parameter(
+ *       name="hobby_id",
+ *       in="path",
+ *       required=true,
+ *       @OA\Schema(type="integer")
+ *     ),
+ *     @OA\Response(
+ *       response=200,
+ *       description="Hobby removed successfully",
+ *       @OA\JsonContent(
+ *         @OA\Property(property="success", type="boolean", example=true),
+ *         @OA\Property(property="message", type="string", example="Hobby removed successfully")
+ *       )
+ *     )
+ *   )
+ * )
+ */

@@ -258,4 +258,286 @@ class PeopleApiController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Get all phone numbers for a person
+     * 
+     * Mengambil semua nomor telepon milik seseorang
+     * 
+     * @param int id ID orang
+     * @tags People
+     */
+    public function getPhoneNumbers($id)
+    {
+        try {
+            $person = People::find($id);
+            
+            if (!$person) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Person not found'
+                ], 404);
+            }
+
+            $phoneNumbers = $person->phoneNumbers;
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Phone numbers retrieved successfully',
+                'data' => [
+                    'person' => $person,
+                    'phone_numbers' => $phoneNumbers
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to retrieve phone numbers',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Add phone number to a person
+     * 
+     * Menambah nomor telepon untuk seseorang
+     * 
+     * @param int id ID orang
+     * @param string phone_number Nomor telepon
+     * @tags People
+     */
+    public function addPhoneNumber(Request $request, $id)
+    {
+        try {
+            $person = People::find($id);
+            
+            if (!$person) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Person not found'
+                ], 404);
+            }
+
+            $validatedData = $request->validate([
+                'phone_number' => 'required|string|unique:phone_numbers,phone_number|regex:/^[0-9+\-\s()]+$/'
+            ]);
+
+            $phoneNumber = PhoneNumber::create([
+                'people_id' => $person->id,
+                'phone_number' => $validatedData['phone_number']
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Phone number added successfully',
+                'data' => $phoneNumber
+            ], 201);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to add phone number',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Remove phone number from a person
+     * 
+     * Menghapus nomor telepon dari seseorang
+     * 
+     * @param int id ID orang
+     * @param int phone_id ID nomor telepon
+     * @tags People
+     */
+    public function removePhoneNumber($id, $phone_id)
+    {
+        try {
+            $person = People::find($id);
+            
+            if (!$person) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Person not found'
+                ], 404);
+            }
+
+            $phoneNumber = PhoneNumber::where('id', $phone_id)
+                                    ->where('people_id', $person->id)
+                                    ->first();
+
+            if (!$phoneNumber) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Phone number not found for this person'
+                ], 404);
+            }
+
+            $phoneNumber->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Phone number removed successfully'
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to remove phone number',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Get all hobbies for a person
+     * 
+     * Mengambil semua hobby milik seseorang
+     * 
+     * @param int id ID orang
+     * @tags People
+     */
+    public function getHobbies($id)
+    {
+        try {
+            $person = People::find($id);
+            
+            if (!$person) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Person not found'
+                ], 404);
+            }
+
+            $hobbies = $person->hobbies;
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Hobbies retrieved successfully',
+                'data' => [
+                    'person' => $person,
+                    'hobbies' => $hobbies
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to retrieve hobbies',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Add hobby to a person
+     * 
+     * Menambah hobby untuk seseorang
+     * 
+     * @param int id ID orang
+     * @param int hobby_id ID hobby
+     * @tags People
+     */
+    public function addHobby(Request $request, $id)
+    {
+        try {
+            $person = People::find($id);
+            
+            if (!$person) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Person not found'
+                ], 404);
+            }
+
+            $validatedData = $request->validate([
+                'hobby_id' => 'required|exists:hobbies,id'
+            ]);
+
+            // Check if hobby already exists
+            if ($person->hobbies()->where('hobby_id', $validatedData['hobby_id'])->exists()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Hobby already exists for this person'
+                ], 409);
+            }
+
+            $person->hobbies()->attach($validatedData['hobby_id']);
+
+            $hobby = Hobby::find($validatedData['hobby_id']);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Hobby added successfully',
+                'data' => $hobby
+            ], 201);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to add hobby',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Remove hobby from a person
+     * 
+     * Menghapus hobby dari seseorang
+     * 
+     * @param int id ID orang
+     * @param int hobby_id ID hobby
+     * @tags People
+     */
+    public function removeHobby($id, $hobby_id)
+    {
+        try {
+            $person = People::find($id);
+            
+            if (!$person) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Person not found'
+                ], 404);
+            }
+
+            // Check if hobby exists for this person
+            if (!$person->hobbies()->where('hobby_id', $hobby_id)->exists()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Hobby not found for this person'
+                ], 404);
+            }
+
+            $person->hobbies()->detach($hobby_id);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Hobby removed successfully'
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to remove hobby',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

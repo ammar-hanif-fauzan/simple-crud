@@ -19,3 +19,7 @@ Route::resource('hobbies', HobbyController::class); // Master Hobby for Many To 
 
 Route::get('/manage/api', [ManageApiController::class, 'index'])->name('manage.api');
 Route::post('/manage/api', [ManageApiController::class, 'test'])->name('manage.api.test');
+
+Route::get('/api-docs', function () {
+    return view('api-docs');
+});

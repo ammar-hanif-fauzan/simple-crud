@@ -9,9 +9,10 @@ use App\Models\PhoneNumber;
 class PhoneNumberApiController extends Controller
 {
     /**
-     * Display a listing of the phone numbers.
-     *
-     * @return \Illuminate\Http\Response
+     * Get list of phone numbers
+     * 
+     * Mengambil daftar semua nomor telepon dengan relasi people
+     * @tags Phone Numbers
      */
     public function index()
     {
@@ -20,10 +21,13 @@ class PhoneNumberApiController extends Controller
     }
 
     /**
-     * Store a newly created phone number in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * Create a new phone number
+     * 
+     * Membuat nomor telepon baru
+     * 
+     * @param int people_id ID orang
+     * @param string phone_number Nomor telepon
+     * @tags Phone Numbers
      */
     public function store(Request $request)
     {
@@ -37,10 +41,12 @@ class PhoneNumberApiController extends Controller
     }
 
     /**
-     * Display the specified phone number.
-     *
-     * @param  \App\Models\PhoneNumber  $phoneNumber
-     * @return \Illuminate\Http\Response
+     * Get a phone number by ID
+     * 
+     * Mengambil detail nomor telepon berdasarkan ID
+     * 
+     * @param int id ID nomor telepon
+     * @tags Phone Numbers
      */
     public function show(PhoneNumber $phoneNumber)
     {
@@ -49,11 +55,14 @@ class PhoneNumberApiController extends Controller
     }
 
     /**
-     * Update the specified phone number in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\PhoneNumber  $phoneNumber
-     * @return \Illuminate\Http\Response
+     * Update a phone number
+     * 
+     * Mengupdate nomor telepon
+     * 
+     * @param int id ID nomor telepon
+     * @param int people_id ID orang
+     * @param string phone_number Nomor telepon
+     * @tags Phone Numbers
      */
     public function update(Request $request, $id)
     {
@@ -67,10 +76,12 @@ class PhoneNumberApiController extends Controller
     }
 
     /**
-     * Remove the specified phone number from storage.
-     *
-     * @param  \App\Models\PhoneNumber  $phoneNumber
-     * @return \Illuminate\Http\Response
+     * Delete a phone number
+     * 
+     * Menghapus nomor telepon
+     * 
+     * @param int id ID nomor telepon
+     * @tags Phone Numbers
      */
     public function destroy(PhoneNumber $phoneNumber)
     {

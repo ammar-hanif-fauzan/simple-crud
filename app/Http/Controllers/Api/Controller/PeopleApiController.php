@@ -12,7 +12,10 @@ use Illuminate\Validation\ValidationException;
 class PeopleApiController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Get list of people
+     * 
+     * Mengambil daftar semua orang dengan relasi idCard, hobbies, dan phoneNumber
+     * @tags People
      */
     public function index()
     {
@@ -22,7 +25,14 @@ class PeopleApiController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Create a new person
+     * 
+     * Membuat orang baru dengan idCard dan hobby
+     * 
+     * @param string name Nama orang
+     * @param string id_number Nomor identitas
+     * @param array hobby_id Array ID hobby
+     * @tags People
      */
     public function store(Request $request)
     {
@@ -52,7 +62,12 @@ class PeopleApiController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Get a person by ID
+     * 
+     * Mengambil detail orang berdasarkan ID
+     * 
+     * @param int id ID orang
+     * @tags People
      */
     public function show($id)
     {
@@ -62,7 +77,15 @@ class PeopleApiController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update a person
+     * 
+     * Mengupdate data orang, idCard, dan hobby
+     * 
+     * @param int id ID orang
+     * @param string name Nama orang
+     * @param string id_number Nomor identitas
+     * @param array hobby_id Array ID hobby
+     * @tags People
      */
     public function update(Request $request, $id)
     {
@@ -95,7 +118,12 @@ class PeopleApiController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Delete a person
+     * 
+     * Menghapus orang dan semua relasinya
+     * 
+     * @param int id ID orang
+     * @tags People
      */
     public function destroy($id)
     {

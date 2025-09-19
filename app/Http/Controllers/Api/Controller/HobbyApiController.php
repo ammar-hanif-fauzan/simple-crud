@@ -9,15 +9,10 @@ use Illuminate\Http\Request;
 class HobbyApiController extends Controller
 {
     /**
-     * @OA\Get(
-     *     path="/api/hobbies",
-     *     tags={"Hobbies"},
-     *     summary="Get list of hobbies",
-     *     @OA\Response(
-     *         response=200,
-     *         description="Successful operation"
-     *     )
-     * )
+     * Get list of hobbies
+     * 
+     * Mengambil daftar semua hobby
+     * @tags Hobbies
      */
     public function index()
     {
@@ -26,22 +21,12 @@ class HobbyApiController extends Controller
     }
 
     /**
-     * @OA\Post(
-     *     path="/api/hobbies",
-     *     tags={"Hobbies"},
-     *     summary="Create a new hobby",
-     *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\JsonContent(
-     *             required={"name"},
-     *             @OA\Property(property="name", type="string", example="Football")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=201,
-     *         description="Created"
-     *     )
-     * )
+     * Create a new hobby
+     * 
+     * Membuat hobby baru
+     * 
+     * @param string name Nama hobby
+     * @tags Hobbies
      */
     public function store(Request $request)
     {
@@ -57,19 +42,12 @@ class HobbyApiController extends Controller
     }
 
     /**
-     * @OA\Get(
-     *     path="/api/hobbies/{id}",
-     *     tags={"Hobbies"},
-     *     summary="Get a hobby by ID",
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         required=true,
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\Response(response=200, description="Successful operation"),
-     *     @OA\Response(response=404, description="Not found")
-     * )
+     * Get a hobby by ID
+     * 
+     * Mengambil detail hobby berdasarkan ID
+     * 
+     * @param int id ID hobby
+     * @tags Hobbies
      */
     public function show(Hobby $hobby)
     {
@@ -77,25 +55,13 @@ class HobbyApiController extends Controller
     }
 
     /**
-     * @OA\Put(
-     *     path="/api/hobbies/{id}",
-     *     tags={"Hobbies"},
-     *     summary="Update a hobby",
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         required=true,
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\JsonContent(
-     *             required={"name"},
-     *             @OA\Property(property="name", type="string", example="Basketball")
-     *         )
-     *     ),
-     *     @OA\Response(response=200, description="Updated")
-     * )
+     * Update a hobby
+     * 
+     * Mengupdate hobby
+     * 
+     * @param int id ID hobby
+     * @param string name Nama hobby
+     * @tags Hobbies
      */
     public function update(Request $request, Hobby $hobby)
     {
@@ -111,18 +77,12 @@ class HobbyApiController extends Controller
     }
 
     /**
-     * @OA\Delete(
-     *     path="/api/hobbies/{id}",
-     *     tags={"Hobbies"},
-     *     summary="Delete a hobby",
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         required=true,
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\Response(response=200, description="Deleted")
-     * )
+     * Delete a hobby
+     * 
+     * Menghapus hobby
+     * 
+     * @param int id ID hobby
+     * @tags Hobbies
      */
     public function destroy(Hobby $hobby)
     {

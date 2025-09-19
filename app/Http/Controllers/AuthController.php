@@ -8,6 +8,17 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
+    /**
+     * Register a new user
+     * 
+     * Mendaftarkan user baru
+     * 
+     * @param string name Nama user
+     * @param string email Email user
+     * @param string password Password user
+     * @param string password_confirmation Konfirmasi password
+     * @tags Authentication
+     */
     public function register(Request $request)
     {
         $fields = $request->validate([
@@ -26,6 +37,15 @@ class AuthController extends Controller
         ];
     }
 
+    /**
+     * Login user
+     * 
+     * Login user dengan email dan password
+     * 
+     * @param string email Email user
+     * @param string password Password user
+     * @tags Authentication
+     */
     public function login(Request $request)
     {
         $request->validate([
@@ -50,6 +70,12 @@ class AuthController extends Controller
         ];
     }
 
+    /**
+     * Logout user
+     * 
+     * Logout user dan hapus token
+     * @tags Authentication
+     */
     public function logout(Request $request)
     {
         $request->user()->tokens()->delete();

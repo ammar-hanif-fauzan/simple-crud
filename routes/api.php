@@ -6,10 +6,17 @@ use App\Http\Controllers\Api\Controller\HobbyApiController;
 use App\Http\Controllers\Api\Controller\PeopleApiController;
 use App\Http\Controllers\Api\Controller\FormInputApiController;
 use App\Http\Controllers\Api\Controller\PhoneNumberApiController;
+use App\Http\Controllers\Api\Controller\ApiDocumentationController;
 use App\Http\Controllers\AuthController;
 
 Route::prefix('v1')->middleware('api')->group(function () {
     // Normal Route
+    /**
+     * Hello World endpoint
+     * 
+     * Test endpoint untuk mengecek API berjalan
+     * @tags Test
+     */
     Route::get('/hello', function () {
         return response()->json(['message' => 'Hello, Happy World!']);
     });
@@ -46,6 +53,12 @@ Route::prefix('v1')->middleware('api')->group(function () {
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('/logout', [AuthController::class, 'logout']);
     });
+
+    // Documentation Management
+    Route::get('/docs/config', [ApiDocumentationController::class, 'getConfig']);
+    Route::get('/docs/filter', [ApiDocumentationController::class, 'getFilteredEndpoints']);
+    Route::post('/docs/selection', [ApiDocumentationController::class, 'saveSelection']);
+    Route::get('/docs/selection', [ApiDocumentationController::class, 'getSelection']);
 });
 
 

@@ -45,6 +45,27 @@ class AuthController extends Controller
      * @param string email Email user
      * @param string password Password user
      * @tags Authentication
+     * @OA\Post(
+     *   path="/api/v1/login",
+     *   summary="Login user",
+     *   description="Login user dengan email dan password",
+     *   tags={"Authentication"},
+     *   @OA\RequestBody(
+     *     required=true,
+     *     @OA\JsonContent(
+     *       @OA\Property(property="email", type="string", example="user@example.com"),
+     *       @OA\Property(property="password", type="string", example="password123")
+     *     )
+     *   ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Login successful",
+     *     @OA\JsonContent(
+     *       @OA\Property(property="user", type="object"),
+     *       @OA\Property(property="token", type="string")
+     *     )
+     *   )
+     * )
      */
     public function login(Request $request)
     {
@@ -75,6 +96,19 @@ class AuthController extends Controller
      * 
      * Logout user dan hapus token
      * @tags Authentication
+     * @OA\Post(
+     *   path="/api/v1/logout",
+     *   summary="Logout user",
+     *   description="Logout user dan hapus token",
+     *   tags={"Authentication"},
+     *   @OA\Response(
+     *     response=200,
+     *     description="Logout successful",
+     *     @OA\JsonContent(
+     *       @OA\Property(property="message", type="string", example="Logged out successfully")
+     *     )
+     *   )
+     * )
      */
     public function logout(Request $request)
     {

@@ -8,9 +8,7 @@ use App\Http\Controllers\HobbyController;
 use App\Http\Controllers\PeopleHobbyController;
 
 use App\Http\Controllers\ManageApiController;
-Route::get('/', function () {
-    return view('welcome');
-});
+
 
 Route::resource('form', FormInputController::class);
 Route::resource('people', PeopleController::class); // One To One with IdCard && Many To Many with Hobby

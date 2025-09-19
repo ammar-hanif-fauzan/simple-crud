@@ -13,7 +13,7 @@ class HobbyApiController extends Controller
      * 
      * Mengambil daftar semua hobby
      * @tags Hobbies
-     */
+         */
     public function index()
     {
         $hobbies = Hobby::paginate(10);

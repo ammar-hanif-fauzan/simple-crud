@@ -23,16 +23,435 @@ use OpenApi\Annotations as OA;
  */
 
 /**
- * @OA\Get(
+ * @OA\PathItem(
  *   path="/api/v1/hello",
- *   summary="Hello World",
- *   description="Test endpoint untuk mengecek API berjalan",
- *   tags={"Test"},
- *   @OA\Response(
- *     response=200,
- *     description="Success",
- *     @OA\JsonContent(
- *       @OA\Property(property="message", type="string", example="Hello, Happy World!")
+ *   @OA\Get(
+ *     summary="Hello World",
+ *     description="Test endpoint untuk mengecek API berjalan",
+ *     tags={"Test"},
+ *     @OA\Response(
+ *       response=200,
+ *       description="Success",
+ *       @OA\JsonContent(
+ *         @OA\Property(property="message", type="string", example="Hello, Happy World!")
+ *       )
+ *     )
+ *   )
+ * )
+ */
+
+/**
+ * @OA\PathItem(
+ *   path="/api/v1/people",
+ *   @OA\Get(
+ *     summary="Get all people",
+ *     description="Mengambil daftar semua orang dengan relasi idCard, hobbies, dan phoneNumber",
+ *     tags={"People"},
+ *     @OA\Response(
+ *       response=200,
+ *       description="Success",
+ *       @OA\JsonContent(
+ *         @OA\Property(property="current_page", type="integer"),
+ *         @OA\Property(property="data", type="array",
+ *           @OA\Items(
+ *             @OA\Property(property="id", type="integer"),
+ *             @OA\Property(property="name", type="string"),
+ *             @OA\Property(property="created_at", type="string", format="datetime"),
+ *             @OA\Property(property="updated_at", type="string", format="datetime")
+ *           )
+ *         )
+ *       )
+ *     )
+ *   ),
+ *   @OA\Post(
+ *     summary="Create new person",
+ *     description="Membuat orang baru dengan idCard dan hobby",
+ *     tags={"People"},
+ *     @OA\RequestBody(
+ *       required=true,
+ *       @OA\JsonContent(
+ *         @OA\Property(property="name", type="string", example="John Doe"),
+ *         @OA\Property(property="id_number", type="string", example="1234567890"),
+ *         @OA\Property(property="hobby_id", type="array", @OA\Items(type="integer"), example={1, 2})
+ *       )
+ *     ),
+ *     @OA\Response(
+ *       response=201,
+ *       description="Person created successfully",
+ *       @OA\JsonContent(
+ *         @OA\Property(property="message", type="string", example="Person created successfully"),
+ *         @OA\Property(property="data", type="object")
+ *       )
+ *     )
+ *   )
+ * )
+ */
+
+/**
+ * @OA\PathItem(
+ *   path="/api/v1/people/{id}",
+ *   @OA\Get(
+ *     summary="Get person by ID",
+ *     description="Mengambil detail orang berdasarkan ID",
+ *     tags={"People"},
+ *     @OA\Parameter(
+ *       name="id",
+ *       in="path",
+ *       required=true,
+ *       @OA\Schema(type="integer")
+ *     ),
+ *     @OA\Response(
+ *       response=200,
+ *       description="Success",
+ *       @OA\JsonContent(
+ *         @OA\Property(property="id", type="integer"),
+ *         @OA\Property(property="name", type="string")
+ *       )
+ *     )
+ *   ),
+ *   @OA\Put(
+ *     summary="Update person",
+ *     description="Update data orang",
+ *     tags={"People"},
+ *     @OA\Parameter(
+ *       name="id",
+ *       in="path",
+ *       required=true,
+ *       @OA\Schema(type="integer")
+ *     ),
+ *     @OA\RequestBody(
+ *       required=true,
+ *       @OA\JsonContent(
+ *         @OA\Property(property="name", type="string")
+ *       )
+ *     ),
+ *     @OA\Response(
+ *       response=200,
+ *       description="Updated",
+ *       @OA\JsonContent(
+ *         @OA\Property(property="message", type="string"),
+ *         @OA\Property(property="data", type="object")
+ *       )
+ *     )
+ *   ),
+ *   @OA\Delete(
+ *     summary="Delete person",
+ *     description="Hapus orang",
+ *     tags={"People"},
+ *     @OA\Parameter(
+ *       name="id",
+ *       in="path",
+ *       required=true,
+ *       @OA\Schema(type="integer")
+ *     ),
+ *     @OA\Response(
+ *       response=200,
+ *       description="Deleted",
+ *       @OA\JsonContent(
+ *         @OA\Property(property="message", type="string")
+ *       )
+ *     )
+ *   )
+ * )
+ */
+
+/**
+ * @OA\PathItem(
+ *   path="/api/v1/hobbies",
+ *   @OA\Get(
+ *     summary="Get all hobbies",
+ *     description="Mengambil daftar semua hobby",
+ *     tags={"Hobbies"},
+ *     @OA\Response(
+ *       response=200,
+ *       description="Success",
+ *       @OA\JsonContent(
+ *         @OA\Property(property="current_page", type="integer"),
+ *         @OA\Property(property="data", type="array",
+ *           @OA\Items(
+ *             @OA\Property(property="id", type="integer"),
+ *             @OA\Property(property="name", type="string"),
+ *             @OA\Property(property="created_at", type="string", format="datetime"),
+ *             @OA\Property(property="updated_at", type="string", format="datetime")
+ *           )
+ *         )
+ *       )
+ *     )
+ *   ),
+ *   @OA\Post(
+ *     summary="Create new hobby",
+ *     description="Membuat hobby baru",
+ *     tags={"Hobbies"},
+ *     @OA\RequestBody(
+ *       required=true,
+ *       @OA\JsonContent(
+ *         @OA\Property(property="name", type="string", example="Reading")
+ *       )
+ *     ),
+ *     @OA\Response(
+ *       response=201,
+ *       description="Hobby created successfully",
+ *       @OA\JsonContent(
+ *         @OA\Property(property="message", type="string", example="Hobby created successfully"),
+ *         @OA\Property(property="data", type="object")
+ *       )
+ *     )
+ *   )
+ * )
+ */
+
+/**
+ * @OA\PathItem(
+ *   path="/api/v1/hobbies/{id}",
+ *   @OA\Get(
+ *     summary="Get hobby by ID",
+ *     description="Mengambil detail hobby berdasarkan ID",
+ *     tags={"Hobbies"},
+ *     @OA\Parameter(
+ *       name="id",
+ *       in="path",
+ *       required=true,
+ *       @OA\Schema(type="integer")
+ *     ),
+ *     @OA\Response(
+ *       response=200,
+ *       description="Success",
+ *       @OA\JsonContent(
+ *         @OA\Property(property="id", type="integer"),
+ *         @OA\Property(property="name", type="string")
+ *       )
+ *     )
+ *   ),
+ *   @OA\Put(
+ *     summary="Update hobby",
+ *     description="Update data hobby",
+ *     tags={"Hobbies"},
+ *     @OA\Parameter(
+ *       name="id",
+ *       in="path",
+ *       required=true,
+ *       @OA\Schema(type="integer")
+ *     ),
+ *     @OA\RequestBody(
+ *       required=true,
+ *       @OA\JsonContent(
+ *         @OA\Property(property="name", type="string")
+ *       )
+ *     ),
+ *     @OA\Response(
+ *       response=200,
+ *       description="Updated",
+ *       @OA\JsonContent(
+ *         @OA\Property(property="message", type="string"),
+ *         @OA\Property(property="data", type="object")
+ *       )
+ *     )
+ *   ),
+ *   @OA\Delete(
+ *     summary="Delete hobby",
+ *     description="Hapus hobby",
+ *     tags={"Hobbies"},
+ *     @OA\Parameter(
+ *       name="id",
+ *       in="path",
+ *       required=true,
+ *       @OA\Schema(type="integer")
+ *     ),
+ *     @OA\Response(
+ *       response=200,
+ *       description="Deleted",
+ *       @OA\JsonContent(
+ *         @OA\Property(property="message", type="string")
+ *       )
+ *     )
+ *   )
+ * )
+ */
+
+/**
+ * @OA\PathItem(
+ *   path="/api/v1/phone-number",
+ *   @OA\Get(
+ *     summary="Get all phone numbers",
+ *     description="Mengambil daftar semua nomor telepon dengan relasi people",
+ *     tags={"Phone Numbers"},
+ *     @OA\Response(
+ *       response=200,
+ *       description="Success",
+ *       @OA\JsonContent(
+ *         @OA\Property(property="current_page", type="integer"),
+ *         @OA\Property(property="data", type="array",
+ *           @OA\Items(
+ *             @OA\Property(property="id", type="integer"),
+ *             @OA\Property(property="phone_number", type="string"),
+ *             @OA\Property(property="people_id", type="integer"),
+ *             @OA\Property(property="created_at", type="string", format="datetime"),
+ *             @OA\Property(property="updated_at", type="string", format="datetime")
+ *           )
+ *         )
+ *       )
+ *     )
+ *   ),
+ *   @OA\Post(
+ *     summary="Create new phone number",
+ *     description="Membuat nomor telepon baru",
+ *     tags={"Phone Numbers"},
+ *     @OA\RequestBody(
+ *       required=true,
+ *       @OA\JsonContent(
+ *         @OA\Property(property="people_id", type="integer", example=1),
+ *         @OA\Property(property="phone_number", type="string", example="081234567890")
+ *       )
+ *     ),
+ *     @OA\Response(
+ *       response=201,
+ *       description="Phone number created successfully",
+ *       @OA\JsonContent(
+ *         @OA\Property(property="message", type="string", example="Phone number created successfully"),
+ *         @OA\Property(property="data", type="object")
+ *       )
+ *     )
+ *   )
+ * )
+ */
+
+/**
+ * @OA\PathItem(
+ *   path="/api/v1/phone-number/{id}",
+ *   @OA\Get(
+ *     summary="Get phone number by ID",
+ *     description="Mengambil detail nomor telepon berdasarkan ID",
+ *     tags={"Phone Numbers"},
+ *     @OA\Parameter(
+ *       name="id",
+ *       in="path",
+ *       required=true,
+ *       @OA\Schema(type="integer")
+ *     ),
+ *     @OA\Response(
+ *       response=200,
+ *       description="Success",
+ *       @OA\JsonContent(
+ *         @OA\Property(property="id", type="integer"),
+ *         @OA\Property(property="phone_number", type="string"),
+ *         @OA\Property(property="people_id", type="integer")
+ *       )
+ *     )
+ *   ),
+ *   @OA\Put(
+ *     summary="Update phone number",
+ *     description="Update data nomor telepon",
+ *     tags={"Phone Numbers"},
+ *     @OA\Parameter(
+ *       name="id",
+ *       in="path",
+ *       required=true,
+ *       @OA\Schema(type="integer")
+ *     ),
+ *     @OA\RequestBody(
+ *       required=true,
+ *       @OA\JsonContent(
+ *         @OA\Property(property="people_id", type="integer"),
+ *         @OA\Property(property="phone_number", type="string")
+ *       )
+ *     ),
+ *     @OA\Response(
+ *       response=200,
+ *       description="Updated",
+ *       @OA\JsonContent(
+ *         @OA\Property(property="message", type="string"),
+ *         @OA\Property(property="data", type="object")
+ *       )
+ *     )
+ *   ),
+ *   @OA\Delete(
+ *     summary="Delete phone number",
+ *     description="Hapus nomor telepon",
+ *     tags={"Phone Numbers"},
+ *     @OA\Parameter(
+ *       name="id",
+ *       in="path",
+ *       required=true,
+ *       @OA\Schema(type="integer")
+ *     ),
+ *     @OA\Response(
+ *       response=200,
+ *       description="Deleted",
+ *       @OA\JsonContent(
+ *         @OA\Property(property="message", type="string")
+ *       )
+ *     )
+ *   )
+ * )
+ */
+
+/**
+ * @OA\PathItem(
+ *   path="/api/v1/register",
+ *   @OA\Post(
+ *     summary="Register new user",
+ *     description="Mendaftarkan user baru",
+ *     tags={"Authentication"},
+ *     @OA\RequestBody(
+ *       required=true,
+ *       @OA\JsonContent(
+ *         @OA\Property(property="name", type="string", example="John Doe"),
+ *         @OA\Property(property="email", type="string", example="john@example.com"),
+ *         @OA\Property(property="password", type="string", example="password123"),
+ *         @OA\Property(property="password_confirmation", type="string", example="password123")
+ *       )
+ *     ),
+ *     @OA\Response(
+ *       response=201,
+ *       description="User registered successfully",
+ *       @OA\JsonContent(
+ *         @OA\Property(property="user", type="object"),
+ *         @OA\Property(property="token", type="string")
+ *       )
+ *     )
+ *   )
+ * )
+ */
+
+/**
+ * @OA\PathItem(
+ *   path="/api/v1/login",
+ *   @OA\Post(
+ *     summary="Login user",
+ *     description="Login user dengan email dan password",
+ *     tags={"Authentication"},
+ *     @OA\RequestBody(
+ *       required=true,
+ *       @OA\JsonContent(
+ *         @OA\Property(property="email", type="string", example="user@example.com"),
+ *         @OA\Property(property="password", type="string", example="password123")
+ *       )
+ *     ),
+ *     @OA\Response(
+ *       response=200,
+ *       description="Login successful",
+ *       @OA\JsonContent(
+ *         @OA\Property(property="user", type="object"),
+ *         @OA\Property(property="token", type="string")
+ *       )
+ *     )
+ *   )
+ * )
+ */
+
+/**
+ * @OA\PathItem(
+ *   path="/api/v1/logout",
+ *   @OA\Post(
+ *     summary="Logout user",
+ *     description="Logout user dan hapus token",
+ *     tags={"Authentication"},
+ *     @OA\Response(
+ *       response=200,
+ *       description="Logout successful",
+ *       @OA\JsonContent(
+ *         @OA\Property(property="message", type="string", example="Logged out successfully")
+ *       )
  *     )
  *   )
  * )

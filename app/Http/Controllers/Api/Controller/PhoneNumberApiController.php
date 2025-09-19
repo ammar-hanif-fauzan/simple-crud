@@ -13,6 +13,28 @@ class PhoneNumberApiController extends Controller
      * 
      * Mengambil daftar semua nomor telepon dengan relasi people
      * @tags Phone Numbers
+     * @OA\Get(
+     *   path="/api/v1/phone-number",
+     *   summary="Get all phone numbers",
+     *   description="Mengambil daftar semua nomor telepon dengan relasi people",
+     *   tags={"Phone Numbers"},
+     *   @OA\Response(
+     *     response=200,
+     *     description="Success",
+     *     @OA\JsonContent(
+     *       @OA\Property(property="current_page", type="integer"),
+     *       @OA\Property(property="data", type="array",
+     *         @OA\Items(
+     *           @OA\Property(property="id", type="integer"),
+     *           @OA\Property(property="phone_number", type="string"),
+     *           @OA\Property(property="people_id", type="integer"),
+     *           @OA\Property(property="created_at", type="string", format="datetime"),
+     *           @OA\Property(property="updated_at", type="string", format="datetime")
+     *         )
+     *       )
+     *     )
+     *   )
+     * )
      */
     public function index()
     {
@@ -28,6 +50,27 @@ class PhoneNumberApiController extends Controller
      * @param int people_id ID orang
      * @param string phone_number Nomor telepon
      * @tags Phone Numbers
+     * @OA\Post(
+     *   path="/api/v1/phone-number",
+     *   summary="Create new phone number",
+     *   description="Membuat nomor telepon baru",
+     *   tags={"Phone Numbers"},
+     *   @OA\RequestBody(
+     *     required=true,
+     *     @OA\JsonContent(
+     *       @OA\Property(property="people_id", type="integer", example=1),
+     *       @OA\Property(property="phone_number", type="string", example="081234567890")
+     *     )
+     *   ),
+     *   @OA\Response(
+     *     response=201,
+     *     description="Phone number created successfully",
+     *     @OA\JsonContent(
+     *       @OA\Property(property="message", type="string", example="Phone number created successfully"),
+     *       @OA\Property(property="data", type="object")
+     *     )
+     *   )
+     * )
      */
     public function store(Request $request)
     {

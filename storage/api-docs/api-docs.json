@@ -1,0 +1,306 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Simple CRUD API Documentation",
+        "description": "Dokumentasi API untuk Simple CRUD - People, Hobbies, Phone Numbers, dan Authentication",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http:\/\/localhost:8000",
+            "description": "Development Server"
+        }
+    ],
+    "paths": {
+        "\/api\/v1\/register": {
+            "post": {
+                "summary": "Register a new user",
+                "description": "Mendaftarkan user baru",
+                "tags": [
+                    "Authentication"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application\/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": [
+                                    "name",
+                                    "email",
+                                    "password",
+                                    "password_confirmation"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "John Doe"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "john@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "password123"
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "password123"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User registered successfully"
+                    }
+                }
+            }
+        },
+        "\/api\/v1\/login": {
+            "post": {
+                "summary": "Login user",
+                "description": "Login user dengan email dan password",
+                "tags": [
+                    "Authentication"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application\/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "john@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "password123"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Login successful"
+                    },
+                    "401": {
+                        "description": "Invalid credentials"
+                    }
+                }
+            }
+        },
+        "\/api\/v1\/people": {
+            "get": {
+                "summary": "Get list of people",
+                "description": "Mengambil daftar semua orang dengan relasi idCard, hobbies, dan phoneNumber",
+                "tags": [
+                    "People"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create a new person",
+                "description": "Membuat orang baru dengan idCard dan hobby",
+                "tags": [
+                    "People"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application\/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": [
+                                    "name",
+                                    "id_number",
+                                    "hobby_id"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "John Doe"
+                                    },
+                                    "id_number": {
+                                        "type": "string",
+                                        "example": "1234567890"
+                                    },
+                                    "hobby_id": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        },
+                                        "example": [
+                                            1,
+                                            2
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Person created successfully"
+                    }
+                }
+            }
+        },
+        "\/api\/v1\/people\/{id}": {
+            "get": {
+                "summary": "Get a person by ID",
+                "description": "Mengambil detail orang berdasarkan ID",
+                "tags": [
+                    "People"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "404": {
+                        "description": "Person not found"
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update a person",
+                "description": "Mengupdate data orang, idCard, dan hobby",
+                "tags": [
+                    "People"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application\/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "John Doe Updated"
+                                    },
+                                    "id_number": {
+                                        "type": "string",
+                                        "example": "1234567890"
+                                    },
+                                    "hobby_id": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        },
+                                        "example": [
+                                            1,
+                                            3
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Person updated successfully"
+                    },
+                    "404": {
+                        "description": "Person not found"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete a person",
+                "description": "Menghapus orang dan semua relasinya",
+                "tags": [
+                    "People"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Person deleted successfully"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Test",
+            "description": "Endpoint untuk testing API"
+        },
+        {
+            "name": "People",
+            "description": "Endpoint untuk mengelola data orang"
+        },
+        {
+            "name": "Hobbies",
+            "description": "Endpoint untuk mengelola data hobby"
+        },
+        {
+            "name": "Phone Numbers",
+            "description": "Endpoint untuk mengelola data nomor telepon"
+        },
+        {
+            "name": "Authentication",
+            "description": "Endpoint untuk autentikasi user (register, login, logout)"
+        }
+    ]
+}

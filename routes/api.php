@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\Controller\PeopleApiController;
 use App\Http\Controllers\Api\Controller\FormInputApiController;
 use App\Http\Controllers\Api\Controller\PhoneNumberApiController;
 use App\Http\Controllers\Api\Controller\ApiDocumentationController;
+use App\Http\Controllers\Api\Controller\SwaggerDocumentationController;
 use App\Http\Controllers\AuthController;
 
 Route::prefix('v1')->middleware('api')->group(function () {
@@ -59,6 +60,13 @@ Route::prefix('v1')->middleware('api')->group(function () {
     Route::get('/docs/filter', [ApiDocumentationController::class, 'getFilteredEndpoints']);
     Route::post('/docs/selection', [ApiDocumentationController::class, 'saveSelection']);
     Route::get('/docs/selection', [ApiDocumentationController::class, 'getSelection']);
+    
+    // Swagger Documentation Management
+    Route::get('/swagger/config', [SwaggerDocumentationController::class, 'getConfig']);
+    Route::get('/swagger/filter', [SwaggerDocumentationController::class, 'getFilteredEndpoints']);
+    Route::post('/swagger/selection', [SwaggerDocumentationController::class, 'saveSelection']);
+    Route::get('/swagger/selection', [SwaggerDocumentationController::class, 'getSelection']);
+    Route::get('/swagger/status', [SwaggerDocumentationController::class, 'getStatus']);
 });
 
 

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Simple CRUD API Documentation</title>
+    <title>Swagger API Documentation Manager</title>
     <style>
         * {
             margin: 0;
@@ -25,7 +25,7 @@
         }
         
         .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
             color: white;
             padding: 2rem;
             border-radius: 10px;
@@ -73,7 +73,7 @@
         
         .filter-section select:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: #28a745;
         }
         
         .btn {
@@ -86,12 +86,12 @@
         }
         
         .btn-primary {
-            background: #667eea;
+            background: #28a745;
             color: white;
         }
         
         .btn-primary:hover {
-            background: #5a6fd8;
+            background: #218838;
         }
         
         .btn-secondary {
@@ -101,6 +101,15 @@
         
         .btn-secondary:hover {
             background: #5a6268;
+        }
+        
+        .btn-info {
+            background: #17a2b8;
+            color: white;
+        }
+        
+        .btn-info:hover {
+            background: #138496;
         }
         
         .endpoints-grid {
@@ -123,8 +132,8 @@
         }
         
         .endpoint-card.selected {
-            border: 2px solid #667eea;
-            background: #f8f9ff;
+            border: 2px solid #28a745;
+            background: #f8fff9;
         }
         
         .endpoint-checkbox {
@@ -173,7 +182,7 @@
             color: #333;
             margin: 2rem 0 1rem 0;
             padding-bottom: 0.5rem;
-            border-bottom: 2px solid #667eea;
+            border-bottom: 2px solid #28a745;
         }
         
         .loading {
@@ -197,51 +206,101 @@
             border-radius: 5px;
             margin: 1rem 0;
         }
+        
+        .status-box {
+            background: #d4edda;
+            color: #155724;
+            padding: 1rem;
+            border-radius: 5px;
+            margin: 1rem 0;
+        }
+        
+        .nav-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .nav-tab {
+            padding: 0.75rem 1.5rem;
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-tab.active {
+            background: #28a745;
+            color: white;
+            border-color: #28a745;
+        }
+        
+        .nav-tab:hover {
+            border-color: #28a745;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>Simple CRUD API Documentation</h1>
-            <p>Dokumentasi lengkap untuk API Simple CRUD - People, Hobbies, Phone Numbers, dan Authentication</p>
-            <div style="margin-top: 1rem;">
-                <a href="/swagger-docs" class="btn btn-primary" style="text-decoration: none; display: inline-block; margin-right: 1rem;">Swagger Manager</a>
-                <a href="/docs/api" class="btn btn-secondary" style="text-decoration: none; display: inline-block;">Lihat Scramble Docs</a>
+            <h1>Swagger API Documentation Manager</h1>
+            <p>Kelola endpoint yang ditampilkan di dokumentasi Swagger (/docs)</p>
+        </div>
+        
+        <div class="nav-tabs">
+            <div class="nav-tab active" onclick="switchTab('swagger')">Swagger Manager</div>
+            <div class="nav-tab" onclick="switchTab('scramble')">Scramble Manager</div>
+        </div>
+        
+        <div id="swaggerTab">
+            <div class="status-box">
+                <strong>✅ Swagger Documentation Status:</strong><br>
+                Swagger documentation sudah berfungsi dengan baik! Anda bisa mengelola endpoint yang ditampilkan di dokumentasi Swagger.<br><br>
+                <strong>Cara Menggunakan:</strong><br>
+                1. Pilih endpoint dengan checkbox di bawah<br>
+                2. Klik "Terapkan ke /docs (Swagger)" untuk menyimpan pilihan<br>
+                3. Dokumentasi Swagger akan otomatis ter-update<br>
+                4. Akses dokumentasi di <a href="/docs" target="_blank">/docs</a>
+            </div>
+            
+            <div class="controls">
+                <div class="filter-section">
+                    <label for="categoryFilter">Filter Kategori:</label>
+                    <select id="categoryFilter">
+                        <option value="all">Semua Endpoint</option>
+                        <option value="Authentication">Authentication</option>
+                        <option value="People">People</option>
+                        <option value="Hobbies">Hobbies</option>
+                        <option value="Phone Numbers">Phone Numbers</option>
+                        <option value="Test">Test</option>
+                    </select>
+                    <button class="btn btn-primary" onclick="loadEndpoints()">Filter</button>
+                    <button class="btn btn-secondary" onclick="loadAllEndpoints()">Reset</button>
+                </div>
+                <div class="filter-section" style="margin-top: 1rem;">
+                    <button class="btn btn-primary" onclick="selectAll()">Pilih Semua</button>
+                    <button class="btn btn-secondary" onclick="deselectAll()">Batal Pilih Semua</button>
+                    <button class="btn btn-primary" onclick="applySelection()" style="background: #28a745;">Terapkan ke /docs (Swagger)</button>
+                    <button class="btn btn-info" onclick="checkStatus()">Cek Status</button>
+                    <span id="selectionCount" style="margin-left: 1rem; font-weight: bold; color: #28a745;"></span>
+                </div>
+            </div>
+            
+            <div id="statusContainer"></div>
+            <div id="endpointsContainer">
+                <div class="loading">Memuat endpoint...</div>
             </div>
         </div>
         
-        <div class="controls">
-            <div class="filter-section">
-                <label for="categoryFilter">Filter Kategori:</label>
-                <select id="categoryFilter">
-                    <option value="all">Semua Endpoint</option>
-                    <option value="Authentication">Authentication</option>
-                    <option value="People">People</option>
-                    <option value="Hobbies">Hobbies</option>
-                    <option value="Phone Numbers">Phone Numbers</option>
-                    <option value="Test">Test</option>
-                </select>
-                <button class="btn btn-primary" onclick="loadEndpoints()">Filter</button>
-                <button class="btn btn-secondary" onclick="loadAllEndpoints()">Reset</button>
+        <div id="scrambleTab" style="display: none;">
+            <div class="info-box">
+                <strong>Scramble Manager:</strong><br>
+                Untuk mengelola dokumentasi Scramble (/docs/api), silakan buka halaman Scramble Manager.
             </div>
-            <div class="filter-section" style="margin-top: 1rem;">
-                <button class="btn btn-primary" onclick="selectAll()">Pilih Semua</button>
-                <button class="btn btn-secondary" onclick="deselectAll()">Batal Pilih Semua</button>
-                <button class="btn btn-primary" onclick="applySelection()" style="background: #28a745;">Terapkan ke /docs/api</button>
-                <span id="selectionCount" style="margin-left: 1rem; font-weight: bold; color: #667eea;"></span>
+            <div style="text-align: center; margin: 2rem 0;">
+                <a href="/api-docs" class="btn btn-primary" style="text-decoration: none; display: inline-block;">Buka Scramble Manager</a>
             </div>
-        </div>
-        
-        <div class="info-box">
-            <strong>Cara Menggunakan:</strong><br>
-            1. Gunakan filter untuk melihat endpoint berdasarkan kategori<br>
-            2. Centang checkbox di card endpoint yang ingin ditampilkan di /docs/api<br>
-            3. Klik "Terapkan ke /docs/api" untuk menyimpan pilihan<br>
-            4. Dokumentasi Scramble akan otomatis menampilkan hanya endpoint yang dipilih
-        </div>
-        
-        <div id="endpointsContainer">
-            <div class="loading">Memuat endpoint...</div>
         </div>
     </div>
 
@@ -255,9 +314,19 @@
             updateSelectionCount();
         };
         
+        function switchTab(tab) {
+            // Update nav tabs
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Show/hide tabs
+            document.getElementById('swaggerTab').style.display = tab === 'swagger' ? 'block' : 'none';
+            document.getElementById('scrambleTab').style.display = tab === 'scramble' ? 'block' : 'none';
+        }
+        
         async function loadAllEndpoints() {
             try {
-                const response = await fetch('/api/v1/docs/config');
+                const response = await fetch('/api/v1/swagger/config');
                 const data = await response.json();
                 allEndpoints = data.available_endpoints;
                 displayEndpoints(allEndpoints);
@@ -276,7 +345,7 @@
             }
             
             try {
-                const response = await fetch(`/api/v1/docs/filter?category=${encodeURIComponent(category)}`);
+                const response = await fetch(`/api/v1/swagger/filter?category=${encodeURIComponent(category)}`);
                 const data = await response.json();
                 displayEndpoints(data);
             } catch (error) {
@@ -376,12 +445,12 @@
         
         async function applySelection() {
             if (selectedEndpoints.size === 0) {
-                alert('Pilih minimal 1 endpoint untuk ditampilkan di /docs/api');
+                alert('Pilih minimal 1 endpoint untuk ditampilkan di /docs (Swagger)');
                 return;
             }
             
             try {
-                const response = await fetch('/api/v1/docs/selection', {
+                const response = await fetch('/api/v1/swagger/selection', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -393,14 +462,38 @@
                 });
                 
                 if (response.ok) {
-                    alert(`Berhasil! ${selectedEndpoints.size} endpoint telah dipilih untuk ditampilkan di /docs/api`);
-                    // Open /docs/api in new tab
-                    window.open('/docs/api', '_blank');
+                    alert(`Berhasil! ${selectedEndpoints.size} endpoint telah dipilih untuk ditampilkan di /docs (Swagger)`);
+                    // Open /docs in new tab
+                    window.open('/docs', '_blank');
                 } else {
                     alert('Gagal menyimpan pilihan endpoint');
                 }
             } catch (error) {
                 alert('Error: ' + error.message);
+            }
+        }
+        
+        async function checkStatus() {
+            try {
+                const response = await fetch('/api/v1/swagger/status');
+                const data = await response.json();
+                
+                const statusHtml = `
+                    <div class="status-box">
+                        <strong>Status Dokumentasi Swagger:</strong><br>
+                        • Dokumentasi tersedia: ${data.has_swagger_docs ? 'Ya' : 'Tidak'}<br>
+                        • Konfigurasi custom: ${data.has_custom_config ? 'Ya' : 'Tidak'}<br>
+                        • Ukuran file: ${data.swagger_docs_size} bytes<br>
+                        • Terakhir diupdate: ${data.last_modified || 'Tidak diketahui'}<br>
+                        • URL Swagger: <a href="${data.swagger_url}" target="_blank">${data.swagger_url}</a><br>
+                        • URL JSON: <a href="${data.swagger_json_url}" target="_blank">${data.swagger_json_url}</a>
+                    </div>
+                `;
+                
+                document.getElementById('statusContainer').innerHTML = statusHtml;
+            } catch (error) {
+                document.getElementById('statusContainer').innerHTML = 
+                    '<div class="error">Error checking status: ' + error.message + '</div>';
             }
         }
     </script>

@@ -23,3 +23,7 @@ Route::post('/manage/api', [ManageApiController::class, 'test'])->name('manage.a
 Route::get('/api-docs', function () {
     return view('api-docs');
 });
+
+Route::get('/swagger-docs', function () {
+    return view('swagger-docs');
+});

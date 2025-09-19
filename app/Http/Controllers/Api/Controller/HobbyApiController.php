@@ -16,8 +16,21 @@ class HobbyApiController extends Controller
          */
     public function index()
     {
-        $hobbies = Hobby::paginate(10);
-        return response()->json($hobbies);
+        try {
+            $hobbies = Hobby::with('people')->paginate(10);
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Hobbies retrieved successfully',
+                'data' => $hobbies
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to retrieve hobbies',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
@@ -30,15 +43,34 @@ class HobbyApiController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-        ]);
+        try {
+            $validatedData = $request->validate([
+                'name' => 'required|string|max:255|unique:hobbies,name',
+            ]);
 
-        $hobby = Hobby::create([
-            'name' => $request->name,
-        ]);
+            $hobby = Hobby::create([
+                'name' => $validatedData['name'],
+            ]);
 
-        return response()->json($hobby, 201);
+            return response()->json([
+                'success' => true,
+                'message' => 'Hobby created successfully',
+                'data' => $hobby
+            ], 201);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to create hobby',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
@@ -49,9 +81,31 @@ class HobbyApiController extends Controller
      * @param int id ID hobby
      * @tags Hobbies
      */
-    public function show(Hobby $hobby)
+    public function show($id)
     {
-        return response()->json($hobby);
+        try {
+            $hobby = Hobby::with('people')->find($id);
+            
+            if (!$hobby) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Hobby not found'
+                ], 404);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Hobby retrieved successfully',
+                'data' => $hobby
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to retrieve hobby',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
@@ -63,17 +117,45 @@ class HobbyApiController extends Controller
      * @param string name Nama hobby
      * @tags Hobbies
      */
-    public function update(Request $request, Hobby $hobby)
+    public function update(Request $request, $id)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-        ]);
+        try {
+            $hobby = Hobby::find($id);
+            
+            if (!$hobby) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Hobby not found'
+                ], 404);
+            }
 
-        $hobby->update([
-            'name' => $request->name,
-        ]);
+            $validatedData = $request->validate([
+                'name' => 'required|string|max:255|unique:hobbies,name,' . $id,
+            ]);
 
-        return response()->json($hobby);
+            $hobby->update([
+                'name' => $validatedData['name'],
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Hobby updated successfully',
+                'data' => $hobby
+            ]);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update hobby',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
@@ -84,13 +166,39 @@ class HobbyApiController extends Controller
      * @param int id ID hobby
      * @tags Hobbies
      */
-    public function destroy(Hobby $hobby)
+    public function destroy($id)
     {
-        $hobby->delete();
+        try {
+            $hobby = Hobby::find($id);
+            
+            if (!$hobby) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Hobby not found'
+                ], 404);
+            }
 
-        return response()->json([
-            'message' => 'Hobby deleted successfully.',
-            'data' => $hobby
-        ]);
+            // Check if hobby is being used by people
+            if ($hobby->people()->count() > 0) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cannot delete hobby. It is being used by ' . $hobby->people()->count() . ' person(s)'
+                ], 409);
+            }
+
+            $hobby->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Hobby deleted successfully'
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to delete hobby',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 }

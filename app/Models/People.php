@@ -28,8 +28,8 @@ class People extends Model
         return $this->belongsToMany(Hobby::class, 'people_hobbies', 'people_id', 'hobby_id');
     }
 
-    public function PhoneNumber()
+    public function phoneNumbers()
     {
-        return $this->hasOne(PhoneNumber::class, 'people_id');
+        return $this->hasMany(PhoneNumber::class, 'people_id');
     }
 }

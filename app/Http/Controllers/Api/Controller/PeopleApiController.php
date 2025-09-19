@@ -19,9 +19,13 @@ class PeopleApiController extends Controller
      */
     public function index()
     {
-        $people = People::with(['idCard', 'hobbies', 'PhoneNumber'])->paginate(5);
+        $people = People::with(['idCard', 'hobbies', 'phoneNumbers'])->paginate(5);
 
-        return response()->json($people);
+        return response()->json([
+            'success' => true,
+            'message' => 'People retrieved successfully',
+            'data' => $people
+        ]);
     }
 
     /**
@@ -36,29 +40,68 @@ class PeopleApiController extends Controller
      */
     public function store(Request $request)
     {
-        // Validasi input (opsional)
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'id_number' => 'required',
-            'hobby_id' => 'required',
-        ]);
+        try {
+            // Validasi input
+            $validatedData = $request->validate([
+                'name' => 'required|string|max:255',
+                'id_number' => 'required|string|unique:id_cards,id_number',
+                'hobby_id' => 'required|array|min:1',
+                'hobby_id.*' => 'exists:hobbies,id',
+                'phone_number' => 'nullable|string|unique:phone_numbers,phone_number'
+            ]);
 
-        $people = new People;
-        $people->name = $request->name;
-        $people->save();
+            // Mulai database transaction
+            \DB::beginTransaction();
 
-        $idCard = new IdCard;
-        $idCard->people_id = $people->id;
-        $idCard->id_number = $request->id_number;
-        $idCard->save();
+            // Create people
+            $people = People::create([
+                'name' => $validatedData['name']
+            ]);
 
-        $people->hobbies()->attach($request->hobby_id);
+            // Create id card
+            $idCard = IdCard::create([
+                'people_id' => $people->id,
+                'id_number' => $validatedData['id_number']
+            ]);
 
-        $person = People::with('idCard', 'hobbies')->find($people->id);
-        return response()->json([
-            'message' => 'People created successfully.',
-            'data' => $person
-        ]);
+            // Attach hobbies
+            $people->hobbies()->attach($validatedData['hobby_id']);
+
+            // Create phone number if provided
+            if (!empty($validatedData['phone_number'])) {
+                PhoneNumber::create([
+                    'people_id' => $people->id,
+                    'phone_number' => $validatedData['phone_number']
+                ]);
+            }
+
+            // Commit transaction
+            \DB::commit();
+
+            // Load relationships
+            $person = People::with(['idCard', 'hobbies', 'phoneNumbers'])->find($people->id);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Person created successfully',
+                'data' => $person
+            ], 201);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            \DB::rollback();
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            \DB::rollback();
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to create person',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
@@ -71,9 +114,29 @@ class PeopleApiController extends Controller
      */
     public function show($id)
     {
-        $person = People::with('idCard', 'hobbies')->find($id);
+        try {
+            $person = People::with(['idCard', 'hobbies', 'phoneNumbers'])->find($id);
 
-        return response()->json($person);
+            if (!$person) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Person not found'
+                ], 404);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Person retrieved successfully',
+                'data' => $person
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to retrieve person',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
@@ -89,32 +152,67 @@ class PeopleApiController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // Cari data people berdasarkan id
-        $people = People::with(['idCard', 'hobbies'])->find($id);
-        if (!$people) {
-            return response()->json(['message' => 'People not found.'], 404);
+        try {
+            // Cari data people berdasarkan id
+            $people = People::find($id);
+            if (!$people) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Person not found'
+                ], 404);
+            }
+
+            // Validasi input
+            $validatedData = $request->validate([
+                'name' => 'required|string|max:255',
+                'id_number' => 'required|string|unique:id_cards,id_number,' . $people->idCard->id,
+                'hobby_id' => 'required|array|min:1',
+                'hobby_id.*' => 'exists:hobbies,id'
+            ]);
+
+            // Mulai database transaction
+            \DB::beginTransaction();
+
+            // Update people
+            $people->update([
+                'name' => $validatedData['name']
+            ]);
+
+            // Update idCard
+            $people->idCard->update([
+                'id_number' => $validatedData['id_number']
+            ]);
+
+            // Update hobbies
+            $people->hobbies()->sync($validatedData['hobby_id']);
+
+            // Commit transaction
+            \DB::commit();
+
+            // Load relationships
+            $updatedPerson = People::with(['idCard', 'hobbies', 'phoneNumbers'])->find($id);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Person updated successfully',
+                'data' => $updatedPerson
+            ]);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            \DB::rollback();
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            \DB::rollback();
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update person',
+                'error' => $e->getMessage()
+            ], 500);
         }
-
-        // Update data people
-        $people->name = $request->name;
-        $people->save();
-
-        // Update idCard
-        $idCard = IdCard::where('people_id', $people->id)->first();
-        if ($idCard) {
-            $idCard->id_number = $request->id_number;
-            $idCard->save();
-        }
-
-        // Update hobbies
-        $people->hobbies()->sync($request->hobby_id);
-
-        $people = People::with(['idCard', 'hobbies'])->find($id);
-        // Response JSON sukses
-        return response()->json([
-            'message' => 'People updated successfully.',
-            'data' => $people
-        ]);
     }
 
     /**
@@ -127,12 +225,37 @@ class PeopleApiController extends Controller
      */
     public function destroy($id)
     {
-        $people = People::with('idCard', 'hobbies')->find($id);
-        $people->delete();
+        try {
+            $people = People::find($id);
+            
+            if (!$people) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Person not found'
+                ], 404);
+            }
 
-        return response()->json([
-            'message' => 'People deleted successfully.',
-            'data' => $people
-        ]);
+            // Mulai database transaction
+            \DB::beginTransaction();
+
+            // Delete people (cascade akan menghapus relasi)
+            $people->delete();
+
+            // Commit transaction
+            \DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Person deleted successfully'
+            ]);
+
+        } catch (\Exception $e) {
+            \DB::rollback();
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to delete person',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 }

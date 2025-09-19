@@ -1,10 +1,10 @@
 {
-  "openapi": "3.0.0",
-  "info": {
-    "title": "Simple CRUD API Documentation",
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Simple CRUD API Documentation",
     "description": "Dokumentasi API untuk Simple CRUD - People, Hobbies, Phone Numbers, dan Authentication",
-    "version": "1.0.0"
-  },
+        "version": "1.0.0"
+    },
   "servers": [
     {
       "url": "http://localhost:8000",
@@ -25,9 +25,9 @@
       }
     }
   },
-  "paths": {
-    "/api/v1/hello": {
-      "get": {
+    "paths": {
+        "/api/v1/hello": {
+            "get": {
         "summary": "Hello World",
         "description": "Test endpoint untuk mengecek API berjalan",
         "tags": ["Test"],
@@ -586,8 +586,8 @@
             }
           }
         ],
-        "responses": {
-          "200": {
+                "responses": {
+                    "200": {
             "description": "Success",
             "content": {
               "application/json": {
@@ -692,36 +692,36 @@
                 }
               }
             }
-          }
-        }
-      }
-    },
-    "/api/v1/register": {
-      "post": {
+                    }
+                }
+            }
+        },
+        "/api/v1/register": {
+            "post": {
         "summary": "Register new user",
         "description": "Mendaftarkan user baru",
         "tags": ["Authentication"],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
                 "type": "object",
-                "properties": {
-                  "name": {
-                    "type": "string",
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
                     "example": "John Doe"
-                  },
-                  "email": {
-                    "type": "string",
+                                    },
+                                    "email": {
+                                        "type": "string",
                     "example": "john@example.com"
-                  },
-                  "password": {
-                    "type": "string",
+                                    },
+                                    "password": {
+                                        "type": "string",
                     "example": "password123"
-                  },
-                  "password_confirmation": {
-                    "type": "string",
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string",
                     "example": "password123"
                   }
                 }
@@ -738,7 +738,7 @@
                   "type": "object",
                   "properties": {
                     "user": {
-                      "type": "object"
+                                "type": "object"
                     },
                     "token": {
                       "type": "string"
@@ -772,12 +772,12 @@
                     "example": "password123"
                   }
                 }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
             "description": "Login successful",
             "content": {
               "application/json": {
@@ -793,10 +793,10 @@
                   }
                 }
               }
+                    }
+                }
             }
-          }
         }
-      }
     },
     "/api/v1/logout": {
       "post": {

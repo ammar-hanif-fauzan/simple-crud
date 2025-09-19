@@ -16,6 +16,7 @@
                     <th class="border px-4 py-2 w-[50px]">No.</th>
                     <th class="border px-4 py-2">Name</th>
                     <th class="border px-4 py-2">Id Number</th>
+                    <th class="border px-4 py-2">Phone Numbers</th>
                     <th class="border px-4 py-2">Hobby</th>
                     <th class="border px-4 py-2">Action</th>
                 </tr>
@@ -28,6 +29,15 @@
                         <td class="border px-4 py-2 text-center relative group">
                             <div class="truncate" style="max-width: 200px">{{ $person->idCard?->id_number }}</div>
                             <div class="absolute left-0 top-full mt-2 hidden group-hover:block bg-gray-700 text-white text-sm p-2 rounded-lg shadow-lg" style="min-width: 200px">{{ $person->idCard?->id_number }}</div>
+                        </td>
+                        <td class="border px-4 py-2 text-center truncate">
+                            @if($person->phoneNumbers->count() > 0)
+                                @foreach($person->phoneNumbers as $phone)
+                                    <span class="bg-blue-200 text-blue-600 px-2 py-1 rounded-full text-xs block mb-1">{{ $phone->phone_number }}</span>
+                                @endforeach
+                            @else
+                                <span class="text-gray-400 text-xs">No phone</span>
+                            @endif
                         </td>
                         <td class="border px-4 py-2 text-center truncate">
                             @foreach($person->hobbies as $hobby)

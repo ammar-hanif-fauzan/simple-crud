@@ -12,7 +12,26 @@
                 </div>
                 <div class="flex flex-col">
                     <label for="number" class="block text-sm font-medium text-gray-900">ID Number</label>
-                    <input type="number" name="id_number" value="{{ old('id_number') }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block min-w-[300px] p-2.5" placeholder="id number">
+                    <input type="text" name="id_number" value="{{ old('id_number') }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block min-w-[300px] p-2.5" placeholder="ID Number">
+                </div>
+                <div class="flex flex-col">
+                    <label for="phone" class="block text-sm font-medium text-gray-900">Phone Numbers (Optional)</label>
+                    <div id="phone-numbers-container">
+                        @if(old('phone_numbers'))
+                            @foreach(old('phone_numbers') as $index => $phone)
+                                <div class="phone-number-field flex items-center gap-2 mb-2">
+                                    <input type="text" name="phone_numbers[]" value="{{ $phone }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block min-w-[250px] p-2.5" placeholder="Phone Number">
+                                    <button type="button" onclick="removePhoneField(this)" class="bg-red-500 text-white px-3 py-2 rounded text-sm">Remove</button>
+                                </div>
+                            @endforeach
+                        @else
+                            <div class="phone-number-field flex items-center gap-2 mb-2">
+                                <input type="text" name="phone_numbers[]" value="" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block min-w-[250px] p-2.5" placeholder="Phone Number">
+                                <button type="button" onclick="removePhoneField(this)" class="bg-red-500 text-white px-3 py-2 rounded text-sm">Remove</button>
+                            </div>
+                        @endif
+                    </div>
+                    <button type="button" onclick="addPhoneField()" class="bg-green-500 text-white px-4 py-2 rounded text-sm w-fit mt-2">Add Phone Number</button>
                 </div>
                 <div class="flex flex-col">
                     <label for="checkbox" class="block text-sm font-medium text-gray-900">Hobby</label>
@@ -37,5 +56,30 @@
                 </div>
             </div>
         @endif
+
+<script>
+function addPhoneField() {
+    const container = document.getElementById('phone-numbers-container');
+    const phoneFieldCount = container.children.length;
+    
+    const newField = document.createElement('div');
+    newField.className = 'phone-number-field flex items-center gap-2 mb-2';
+    newField.innerHTML = `
+        <input type="text" name="phone_numbers[]" value="" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block min-w-[250px] p-2.5" placeholder="Phone Number">
+        <button type="button" onclick="removePhoneField(this)" class="bg-red-500 text-white px-3 py-2 rounded text-sm">Remove</button>
+    `;
+    
+    container.appendChild(newField);
+}
+
+function removePhoneField(button) {
+    const container = document.getElementById('phone-numbers-container');
+    if (container.children.length > 1) {
+        button.parentElement.remove();
+    } else {
+        alert('Minimal harus ada 1 field phone number');
+    }
+}
+</script>
 
 @endsection

@@ -21,7 +21,7 @@
         </div>
         <div class="flex flex-col">
             <label for="number" class="block text-sm font-medium text-gray-900">ID Number</label>
-            <input type="number" name="id_number" value="{{ old('id_number', $person->idCard->id_number) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block min-w-[300px] p-2.5" placeholder="Number">
+            <input type="text" name="id_number" value="{{ old('id_number', $person->idCard->id_number) }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block min-w-[300px] p-2.5" placeholder="ID Number">
         </div>
         <div class="flex flex-col">
             <label for="checkbox" class="block text-sm font-medium text-gray-900">Hobby</label>

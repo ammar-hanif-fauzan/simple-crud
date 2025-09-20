@@ -1,10 +1,10 @@
 {
-    "openapi": "3.0.0",
-    "info": {
-        "title": "Simple CRUD API Documentation",
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Simple CRUD API Documentation",
     "description": "Dokumentasi API untuk Simple CRUD - People, Hobbies, Phone Numbers, dan Authentication",
-        "version": "1.0.0"
-    },
+    "version": "1.0.0"
+  },
   "servers": [
     {
       "url": "http://localhost:8000",
@@ -25,9 +25,9 @@
       }
     }
   },
-    "paths": {
-        "/api/v1/hello": {
-            "get": {
+  "paths": {
+    "/api/v1/hello": {
+      "get": {
         "summary": "Hello World",
         "description": "Test endpoint untuk mengecek API berjalan",
         "tags": ["Test"],
@@ -54,7 +54,7 @@
     "/api/v1/people": {
       "get": {
         "summary": "Get all people",
-        "description": "Mengambil daftar semua orang dengan relasi idCard, hobbies, dan phoneNumber",
+        "description": "Mengambil daftar semua orang dengan relasi idCard, hobbies, dan phoneNumbers",
         "tags": ["People"],
         "responses": {
           "200": {
@@ -64,30 +64,117 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "current_page": {
-                      "type": "integer"
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "People retrieved successfully"
                     },
                     "data": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "type": "integer"
-                          },
-                          "name": {
-                            "type": "string"
-                          },
-                          "created_at": {
-                            "type": "string",
-                            "format": "datetime"
-                          },
-                          "updated_at": {
-                            "type": "string",
-                            "format": "datetime"
+                      "type": "object",
+                      "properties": {
+                        "current_page": {
+                          "type": "integer"
+                        },
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "integer"
+                              },
+                              "name": {
+                                "type": "string"
+                              },
+                              "created_at": {
+                                "type": "string",
+                                "format": "datetime"
+                              },
+                              "updated_at": {
+                                "type": "string",
+                                "format": "datetime"
+                              },
+                              "id_card": {
+                                "type": "object"
+                              },
+                              "hobbies": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object"
+                                }
+                              },
+                              "phone_numbers": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object"
+                                }
+                              }
+                            }
                           }
+                        },
+                        "first_page_url": {
+                          "type": "string"
+                        },
+                        "from": {
+                          "type": "integer"
+                        },
+                        "last_page": {
+                          "type": "integer"
+                        },
+                        "last_page_url": {
+                          "type": "string"
+                        },
+                        "links": {
+                          "type": "array",
+                          "items": {
+                            "type": "object"
+                          }
+                        },
+                        "next_page_url": {
+                          "type": "string"
+                        },
+                        "path": {
+                          "type": "string"
+                        },
+                        "per_page": {
+                          "type": "integer"
+                        },
+                        "prev_page_url": {
+                          "type": "string"
+                        },
+                        "to": {
+                          "type": "integer"
+                        },
+                        "total": {
+                          "type": "integer"
                         }
                       }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Failed to retrieve people"
+                    },
+                    "error": {
+                      "type": "string"
                     }
                   }
                 }
@@ -98,7 +185,7 @@
       },
       "post": {
         "summary": "Create new person",
-        "description": "Membuat orang baru dengan idCard dan hobby",
+        "description": "Membuat orang baru dengan idCard, hobbies, dan phone numbers (bisa lebih dari satu)",
         "tags": ["People"],
         "requestBody": {
           "required": true,
@@ -106,6 +193,7 @@
             "application/json": {
               "schema": {
                 "type": "object",
+                "required": ["name", "id_number", "hobby_id"],
                 "properties": {
                   "name": {
                     "type": "string",
@@ -121,6 +209,14 @@
                       "type": "integer"
                     },
                     "example": [1, 2]
+                  },
+                  "phone_numbers": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "example": ["081234567890", "081234567891"],
+                    "description": "Array of phone numbers (optional)"
                   }
                 }
               }
@@ -135,12 +231,85 @@
                 "schema": {
                   "type": "object",
                   "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
                     "message": {
                       "type": "string",
                       "example": "Person created successfully"
                     },
                     "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "id_card": {
+                          "type": "object"
+                        },
+                        "hobbies": {
+                          "type": "array",
+                          "items": {
+                            "type": "object"
+                          }
+                        },
+                        "phone_numbers": {
+                          "type": "array",
+                          "items": {
+                            "type": "object"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Validation failed"
+                    },
+                    "errors": {
                       "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Failed to create person"
+                    },
+                    "error": {
+                      "type": "string"
                     }
                   }
                 }
@@ -173,11 +342,39 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "id": {
-                      "type": "integer"
+                    "success": {
+                      "type": "boolean",
+                      "example": true
                     },
-                    "name": {
-                      "type": "string"
+                    "message": {
+                      "type": "string",
+                      "example": "Person retrieved successfully"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "id_card": {
+                          "type": "object"
+                        },
+                        "hobbies": {
+                          "type": "array",
+                          "items": {
+                            "type": "object"
+                          }
+                        },
+                        "phone_numbers": {
+                          "type": "array",
+                          "items": {
+                            "type": "object"
+                          }
+                        }
+                      }
                     }
                   }
                 }
@@ -223,8 +420,13 @@
                 "schema": {
                   "type": "object",
                   "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
                     "message": {
-                      "type": "string"
+                      "type": "string",
+                      "example": "Person updated successfully"
                     },
                     "data": {
                       "type": "object"
@@ -258,8 +460,13 @@
                 "schema": {
                   "type": "object",
                   "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
                     "message": {
-                      "type": "string"
+                      "type": "string",
+                      "example": "Person deleted successfully"
                     }
                   }
                 }
@@ -282,27 +489,40 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "current_page": {
-                      "type": "integer"
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Hobbies retrieved successfully"
                     },
                     "data": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "type": "integer"
-                          },
-                          "name": {
-                            "type": "string"
-                          },
-                          "created_at": {
-                            "type": "string",
-                            "format": "datetime"
-                          },
-                          "updated_at": {
-                            "type": "string",
-                            "format": "datetime"
+                      "type": "object",
+                      "properties": {
+                        "current_page": {
+                          "type": "integer"
+                        },
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "integer"
+                              },
+                              "name": {
+                                "type": "string"
+                              },
+                              "created_at": {
+                                "type": "string",
+                                "format": "datetime"
+                              },
+                              "updated_at": {
+                                "type": "string",
+                                "format": "datetime"
+                              }
+                            }
                           }
                         }
                       }
@@ -324,6 +544,7 @@
             "application/json": {
               "schema": {
                 "type": "object",
+                "required": ["name"],
                 "properties": {
                   "name": {
                     "type": "string",
@@ -342,131 +563,16 @@
                 "schema": {
                   "type": "object",
                   "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
                     "message": {
                       "type": "string",
                       "example": "Hobby created successfully"
                     },
                     "data": {
                       "type": "object"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/hobbies/{id}": {
-      "get": {
-        "summary": "Get hobby by ID",
-        "description": "Mengambil detail hobby berdasarkan ID",
-        "tags": ["Hobbies"],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "integer"
-                    },
-                    "name": {
-                      "type": "string"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "Update hobby",
-        "description": "Update data hobby",
-        "tags": ["Hobbies"],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "name": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Updated",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    },
-                    "data": {
-                      "type": "object"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "Delete hobby",
-        "description": "Hapus hobby",
-        "tags": ["Hobbies"],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Deleted",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string"
                     }
                   }
                 }
@@ -489,30 +595,43 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "current_page": {
-                      "type": "integer"
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Phone numbers retrieved successfully"
                     },
                     "data": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "type": "integer"
-                          },
-                          "phone_number": {
-                            "type": "string"
-                          },
-                          "people_id": {
-                            "type": "integer"
-                          },
-                          "created_at": {
-                            "type": "string",
-                            "format": "datetime"
-                          },
-                          "updated_at": {
-                            "type": "string",
-                            "format": "datetime"
+                      "type": "object",
+                      "properties": {
+                        "current_page": {
+                          "type": "integer"
+                        },
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "integer"
+                              },
+                              "phone_number": {
+                                "type": "string"
+                              },
+                              "people_id": {
+                                "type": "integer"
+                              },
+                              "created_at": {
+                                "type": "string",
+                                "format": "datetime"
+                              },
+                              "updated_at": {
+                                "type": "string",
+                                "format": "datetime"
+                              }
+                            }
                           }
                         }
                       }
@@ -534,6 +653,7 @@
             "application/json": {
               "schema": {
                 "type": "object",
+                "required": ["people_id", "phone_number"],
                 "properties": {
                   "people_id": {
                     "type": "integer",
@@ -556,6 +676,10 @@
                 "schema": {
                   "type": "object",
                   "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
                     "message": {
                       "type": "string",
                       "example": "Phone number created successfully"
@@ -571,157 +695,33 @@
         }
       }
     },
-    "/api/v1/phone-number/{id}": {
-      "get": {
-        "summary": "Get phone number by ID",
-        "description": "Mengambil detail nomor telepon berdasarkan ID",
-        "tags": ["Phone Numbers"],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ],
-                "responses": {
-                    "200": {
-            "description": "Success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "integer"
-                    },
-                    "phone_number": {
-                      "type": "string"
-                    },
-                    "people_id": {
-                      "type": "integer"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "Update phone number",
-        "description": "Update data nomor telepon",
-        "tags": ["Phone Numbers"],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ],
+    "/api/v1/register": {
+      "post": {
+        "summary": "Register new user",
+        "description": "Mendaftarkan user baru",
+        "tags": ["Authentication"],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
+                "required": ["name", "email", "password", "password_confirmation"],
                 "properties": {
-                  "people_id": {
-                    "type": "integer"
-                  },
-                  "phone_number": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Updated",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    },
-                    "data": {
-                      "type": "object"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "Delete phone number",
-        "description": "Hapus nomor telepon",
-        "tags": ["Phone Numbers"],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Deleted",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    }
-                  }
-                }
-              }
-            }
-                    }
-                }
-            }
-        },
-        "/api/v1/register": {
-            "post": {
-        "summary": "Register new user",
-        "description": "Mendaftarkan user baru",
-        "tags": ["Authentication"],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                "type": "object",
-                                "properties": {
-                                    "name": {
-                                        "type": "string",
+                  "name": {
+                    "type": "string",
                     "example": "John Doe"
-                                    },
-                                    "email": {
-                                        "type": "string",
+                  },
+                  "email": {
+                    "type": "string",
                     "example": "john@example.com"
-                                    },
-                                    "password": {
-                                        "type": "string",
+                  },
+                  "password": {
+                    "type": "string",
                     "example": "password123"
-                                    },
-                                    "password_confirmation": {
-                                        "type": "string",
+                  },
+                  "password_confirmation": {
+                    "type": "string",
                     "example": "password123"
                   }
                 }
@@ -738,7 +738,7 @@
                   "type": "object",
                   "properties": {
                     "user": {
-                                "type": "object"
+                      "type": "object"
                     },
                     "token": {
                       "type": "string"
@@ -762,6 +762,7 @@
             "application/json": {
               "schema": {
                 "type": "object",
+                "required": ["email", "password"],
                 "properties": {
                   "email": {
                     "type": "string",
@@ -772,12 +773,12 @@
                     "example": "password123"
                   }
                 }
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
             "description": "Login successful",
             "content": {
               "application/json": {
@@ -793,10 +794,10 @@
                   }
                 }
               }
-                    }
-                }
             }
+          }
         }
+      }
     },
     "/api/v1/logout": {
       "post": {
@@ -814,6 +815,320 @@
                     "message": {
                       "type": "string",
                       "example": "Logged out successfully"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/people/{id}/phone-numbers": {
+      "get": {
+        "summary": "Get all phone numbers for a person",
+        "description": "Mengambil semua nomor telepon milik seseorang",
+        "tags": ["People"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Phone numbers retrieved successfully"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "person": {
+                          "type": "object"
+                        },
+                        "phone_numbers": {
+                          "type": "array",
+                          "items": {
+                            "type": "object"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Add phone number to a person",
+        "description": "Menambah nomor telepon untuk seseorang",
+        "tags": ["People"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["phone_number"],
+                "properties": {
+                  "phone_number": {
+                    "type": "string",
+                    "example": "081234567890"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Phone number added successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Phone number added successfully"
+                    },
+                    "data": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/people/{id}/phone-numbers/{phone_id}": {
+      "delete": {
+        "summary": "Remove phone number from a person",
+        "description": "Menghapus nomor telepon dari seseorang",
+        "tags": ["People"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "phone_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Phone number removed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Phone number removed successfully"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/people/{id}/hobbies": {
+      "get": {
+        "summary": "Get all hobbies for a person",
+        "description": "Mengambil semua hobby milik seseorang",
+        "tags": ["People"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Hobbies retrieved successfully"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "person": {
+                          "type": "object"
+                        },
+                        "hobbies": {
+                          "type": "array",
+                          "items": {
+                            "type": "object"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Add hobby to a person",
+        "description": "Menambah hobby untuk seseorang",
+        "tags": ["People"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["hobby_id"],
+                "properties": {
+                  "hobby_id": {
+                    "type": "integer",
+                    "example": 1
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Hobby added successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Hobby added successfully"
+                    },
+                    "data": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/people/{id}/hobbies/{hobby_id}": {
+      "delete": {
+        "summary": "Remove hobby from a person",
+        "description": "Menghapus hobby dari seseorang",
+        "tags": ["People"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "hobby_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Hobby removed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Hobby removed successfully"
                     }
                   }
                 }

@@ -45,42 +45,96 @@ use OpenApi\Annotations as OA;
  *   path="/api/v1/people",
  *   @OA\Get(
  *     summary="Get all people",
- *     description="Mengambil daftar semua orang dengan relasi idCard, hobbies, dan phoneNumber",
+ *     description="Mengambil daftar semua orang dengan relasi idCard, hobbies, dan phoneNumbers",
  *     tags={"People"},
  *     @OA\Response(
  *       response=200,
  *       description="Success",
  *       @OA\JsonContent(
- *         @OA\Property(property="current_page", type="integer"),
- *         @OA\Property(property="data", type="array",
- *           @OA\Items(
- *             @OA\Property(property="id", type="integer"),
- *             @OA\Property(property="name", type="string"),
- *             @OA\Property(property="created_at", type="string", format="datetime"),
- *             @OA\Property(property="updated_at", type="string", format="datetime")
- *           )
+ *         @OA\Property(property="success", type="boolean", example=true),
+ *         @OA\Property(property="message", type="string", example="People retrieved successfully"),
+ *         @OA\Property(property="data", type="object",
+ *           @OA\Property(property="current_page", type="integer"),
+ *           @OA\Property(property="data", type="array",
+ *             @OA\Items(
+ *               @OA\Property(property="id", type="integer"),
+ *               @OA\Property(property="name", type="string"),
+ *               @OA\Property(property="created_at", type="string", format="datetime"),
+ *               @OA\Property(property="updated_at", type="string", format="datetime"),
+ *               @OA\Property(property="id_card", type="object"),
+ *               @OA\Property(property="hobbies", type="array", @OA\Items(type="object")),
+ *               @OA\Property(property="phone_numbers", type="array", @OA\Items(type="object"))
+ *             )
+ *           ),
+ *           @OA\Property(property="first_page_url", type="string"),
+ *           @OA\Property(property="from", type="integer"),
+ *           @OA\Property(property="last_page", type="integer"),
+ *           @OA\Property(property="last_page_url", type="string"),
+ *           @OA\Property(property="links", type="array", @OA\Items(type="object")),
+ *           @OA\Property(property="next_page_url", type="string"),
+ *           @OA\Property(property="path", type="string"),
+ *           @OA\Property(property="per_page", type="integer"),
+ *           @OA\Property(property="prev_page_url", type="string"),
+ *           @OA\Property(property="to", type="integer"),
+ *           @OA\Property(property="total", type="integer")
  *         )
+ *       )
+ *     ),
+ *     @OA\Response(
+ *       response=500,
+ *       description="Internal Server Error",
+ *       @OA\JsonContent(
+ *         @OA\Property(property="success", type="boolean", example=false),
+ *         @OA\Property(property="message", type="string", example="Failed to retrieve people"),
+ *         @OA\Property(property="error", type="string")
  *       )
  *     )
  *   ),
  *   @OA\Post(
  *     summary="Create new person",
- *     description="Membuat orang baru dengan idCard dan hobby",
+ *     description="Membuat orang baru dengan idCard, hobbies, dan phone numbers (bisa lebih dari satu)",
  *     tags={"People"},
  *     @OA\RequestBody(
  *       required=true,
  *       @OA\JsonContent(
+ *         required={"name", "id_number", "hobby_id"},
  *         @OA\Property(property="name", type="string", example="John Doe"),
  *         @OA\Property(property="id_number", type="string", example="1234567890"),
- *         @OA\Property(property="hobby_id", type="array", @OA\Items(type="integer"), example={1, 2})
+ *         @OA\Property(property="hobby_id", type="array", @OA\Items(type="integer"), example={1, 2}),
+ *         @OA\Property(property="phone_numbers", type="array", @OA\Items(type="string"), example={"081234567890", "081234567891"}, description="Array of phone numbers (optional)")
  *       )
  *     ),
  *     @OA\Response(
  *       response=201,
  *       description="Person created successfully",
  *       @OA\JsonContent(
+ *         @OA\Property(property="success", type="boolean", example=true),
  *         @OA\Property(property="message", type="string", example="Person created successfully"),
- *         @OA\Property(property="data", type="object")
+ *         @OA\Property(property="data", type="object",
+ *           @OA\Property(property="id", type="integer"),
+ *           @OA\Property(property="name", type="string"),
+ *           @OA\Property(property="id_card", type="object"),
+ *           @OA\Property(property="hobbies", type="array", @OA\Items(type="object")),
+ *           @OA\Property(property="phone_numbers", type="array", @OA\Items(type="object"))
+ *         )
+ *       )
+ *     ),
+ *     @OA\Response(
+ *       response=422,
+ *       description="Validation failed",
+ *       @OA\JsonContent(
+ *         @OA\Property(property="success", type="boolean", example=false),
+ *         @OA\Property(property="message", type="string", example="Validation failed"),
+ *         @OA\Property(property="errors", type="object")
+ *       )
+ *     ),
+ *     @OA\Response(
+ *       response=500,
+ *       description="Internal Server Error",
+ *       @OA\JsonContent(
+ *         @OA\Property(property="success", type="boolean", example=false),
+ *         @OA\Property(property="message", type="string", example="Failed to create person"),
+ *         @OA\Property(property="error", type="string")
  *       )
  *     )
  *   )

@@ -48,7 +48,7 @@ class PeopleApiController extends Controller
                 'hobby_id' => 'required|array|min:1',
                 'hobby_id.*' => 'exists:hobbies,id',
                 'phone_number' => 'nullable|string|unique:phone_numbers,phone_number'
-            ]);
+            ]);                                                                                                                                                                                                                                                                                                                                                     
 
             // Mulai database transaction
             \DB::beginTransaction();
